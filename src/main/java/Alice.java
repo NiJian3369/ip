@@ -1,10 +1,11 @@
 import java.util.Scanner;
+import java.util.ArrayList;
 
 public class Alice {
     public static void main(String[] args) {
         System.out.println("Good day mate! Alice here! What can I do for ya today?");
 
-        Task[] tasks = new Task[100];
+        ArrayList<Task> tasks = new ArrayList<>();
         int taskCount = 0;
         Scanner scanner = new Scanner(System.in);
         String input;
@@ -21,9 +22,9 @@ public class Alice {
                     if (description.isEmpty()) {
                         throw new AliceException("The description of a todo cannot be empty.");
                     }
-                    tasks[taskCount] = new ToDos(description);
                     taskCount++;
-                    printAddedMessage(tasks[taskCount - 1], taskCount);
+                    tasks.add(new ToDos(description));
+                    printAddedMessage(tasks.get(taskCount - 1), taskCount);
 
                 } else if (input.startsWith("deadline ")) {
                     if (!input.contains(" /by ")) {
@@ -34,9 +35,9 @@ public class Alice {
                     if (parts.length < 2 || parts[0].trim().isEmpty() || parts[1].trim().isEmpty()) {
                         throw new AliceException("A deadline needs both a description and a /by date.");
                     }
-                    tasks[taskCount] = new Deadlines(parts[0].trim(), parts[1].trim());
+                    tasks.add(new Deadlines(parts[0].trim(), parts[1].trim()));
                     taskCount++;
-                    printAddedMessage(tasks[taskCount - 1], taskCount);
+                    printAddedMessage(tasks.get(taskCount - 1), taskCount);
 
                 } else if (input.startsWith("event")) {
                     if (!input.contains(" /from ") || !input.contains(" /to ")) {
@@ -48,34 +49,34 @@ public class Alice {
                     String[] toSplit = fromSplit[1].split(" /to ");
                     String from = toSplit[0];
                     String to = toSplit[1];
-                    tasks[taskCount] = new Events(description, from, to);
+                    tasks.add(new Events(description, from, to));
                     taskCount++;
-                    printAddedMessage(tasks[taskCount - 1], taskCount);
+                    printAddedMessage(tasks.get(taskCount - 1), taskCount);
 
                 } else if (input.equals("list")) {
                     System.out.println("Here are the tasks in your list:");
                     for (int i = 0; i < taskCount; i++) {
-                        System.out.println((i + 1) + "." + tasks[i]);
+                        System.out.println((i + 1) + "." + tasks.get(i));
                     }
                 } else if (input.startsWith("mark ")) {
                     int index = Integer.parseInt(input.substring(5)) - 1;
                     if (index < 0 || index >= taskCount) {
                         throw new AliceException("That task number doesn't exist!");
                     }
-                    tasks[index].markAsDone();
+                    tasks.get(index).markAsDone();
                     System.out.println("Nice! I've marked this task as done:");
-                    System.out.println("  " + tasks[index]);
+                    System.out.println("  " + tasks.get(index));
 
                 } else if (input.startsWith("unmark ")) {
                     int index = Integer.parseInt(input.substring(7)) - 1;
                     if (index < 0 || index >= taskCount) {
                         throw new AliceException("That task number doesn't exist!");
                     }
-                    tasks[index].markAsNotDone();
+                    tasks.get(index).markAsNotDone();
                     System.out.println("OK, I've marked this task as not done yet:");
-                    System.out.println("  " + tasks[index]);
+                    System.out.println("  " + tasks.get(index));
                 } else {
-                    tasks[taskCount] = new Task(input);
+                    tasks.add(new Task(input));
                     taskCount++;
                     System.out.println("added: " + input);
                 }
