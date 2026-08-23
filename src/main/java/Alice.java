@@ -75,6 +75,17 @@ public class Alice {
                     tasks.get(index).markAsNotDone();
                     System.out.println("OK, I've marked this task as not done yet:");
                     System.out.println("  " + tasks.get(index));
+                } else if (input.startsWith("delete ")) {
+                    int index = Integer.parseInt(input.substring(7)) - 1;
+                    if (index < 0 || index >= tasks.size()) {
+                        throw new AliceException("That task number doesn't exist!");
+                    }
+                    taskCount--;
+                    Task removedTask = tasks.get(index);
+                    tasks.remove(index);
+                    System.out.println("Noted. I've removed this task:");
+                    System.out.println("  " + removedTask);
+                    System.out.println("Now you have " + tasks.size() + " tasks in the list.");
                 } else {
                     tasks.add(new Task(input));
                     taskCount++;
