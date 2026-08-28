@@ -1,6 +1,8 @@
+package alice;
+
 public class Ui {
     public void showWelcome() {
-        System.out.println("Good day mate! Alice here! What can I do for ya today?");
+        System.out.println("Good day mate! alice.Alice here! What can I do for ya today?");
     }
 
     public void showGoodbye() {
