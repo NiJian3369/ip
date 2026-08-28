@@ -1,5 +1,7 @@
 package alice;
 
+import java.util.ArrayList;
+
 public class Ui {
     public void showWelcome() {
         System.out.println("Good day mate! alice.Alice here! What can I do for ya today?");
@@ -48,5 +50,17 @@ public class Ui {
 
     public void showPlainAdded(String input) {
         System.out.println("added: " + input);
+    }
+
+    /**
+     * Displays the list of tasks matching a search keyword.
+     *
+     * @param matches the list of matching tasks to display.
+     */
+    public void showFoundTasks(ArrayList<Task> matches) {
+        System.out.println("Here are the matching tasks in your list:");
+        for (int i = 0; i < matches.size(); i++) {
+            System.out.println((i + 1) + "." + matches.get(i));
+        }
     }
 }
