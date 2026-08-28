@@ -95,4 +95,19 @@ public class Parser {
     public static int parseIndex(String input, int prefixLength) throws NumberFormatException {
         return Integer.parseInt(input.substring(prefixLength)) - 1;
     }
+
+    /**
+     * Extracts and validates the keyword from a "find" command.
+     *
+     * @param input the full raw user input, e.g. "find book".
+     * @return the extracted, trimmed keyword.
+     * @throws AliceException if the keyword is empty.
+     */
+    public static String parseFindKeyword(String input) throws AliceException {
+        String keyword = input.length() > 4 ? input.substring(5).trim() : "";
+        if (keyword.isEmpty()) {
+            throw new AliceException("The keyword to find cannot be empty.");
+        }
+        return keyword;
+    }
 }

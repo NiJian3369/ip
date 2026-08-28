@@ -65,12 +65,29 @@ public class TaskList {
     }
 
     /**
+<<<<<<< HEAD
      * Checks whether the given index refers to a valid position within
      * the list.
      *
      * @param index the zero-based index to check.
      * @return true if the index is within bounds, false otherwise.
      */
+
+     * Returns a list of tasks whose description contains the given keyword.
+     *
+     * @param keyword the keyword to search for.
+     * @return a list of matching tasks.
+     */
+    public ArrayList<Task> find(String keyword) {
+        ArrayList<Task> matches = new ArrayList<>();
+        for (Task task : tasks) {
+            if (task.getDescription().contains(keyword)) {
+                matches.add(task);
+            }
+        }
+        return matches;
+    }
+
     public boolean isValidIndex(int index) {
         return index >= 0 && index < tasks.size();
     }

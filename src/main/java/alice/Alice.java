@@ -1,6 +1,7 @@
 package alice;
 
 import java.util.Scanner;
+import java.util.ArrayList;
 
 /**
  * Entry point for the Alice chatbot application.
@@ -52,6 +53,11 @@ public class Alice {
 
                 } else if (input.equals("list")) {
                     ui.showTaskList(tasks);
+
+                } else if (input.equals("find") || input.startsWith("find ")) {
+                    String keyword = Parser.parseFindKeyword(input);
+                    ArrayList<Task> matches = tasks.find(keyword);
+                    ui.showFoundTasks(matches);
 
                 } else if (input.startsWith("mark ")) {
                     int index = Parser.parseIndex(input, 5);

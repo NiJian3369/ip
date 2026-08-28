@@ -1,9 +1,12 @@
 package alice;
 
+import java.util.ArrayList;
+
 /**
  * Handles all interactions with the user, including displaying messages,
  * task updates, and error notifications to the console.
  */
+
 public class Ui {
     /**
      * Displays the welcome message shown when the program starts.
@@ -100,5 +103,17 @@ public class Ui {
      */
     public void showPlainAdded(String input) {
         System.out.println("added: " + input);
+    }
+
+    /**
+     * Displays the list of tasks matching a search keyword.
+     *
+     * @param matches the list of matching tasks to display.
+     */
+    public void showFoundTasks(ArrayList<Task> matches) {
+        System.out.println("Here are the matching tasks in your list:");
+        for (int i = 0; i < matches.size(); i++) {
+            System.out.println((i + 1) + "." + matches.get(i));
+        }
     }
 }
