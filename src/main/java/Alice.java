@@ -5,8 +5,10 @@ public class Alice {
     public static void main(String[] args) {
         System.out.println("Good day mate! Alice here! What can I do for ya today?");
 
-        ArrayList<Task> tasks = new ArrayList<>();
-        int taskCount = 0;
+        Storage storage = new Storage("./data/alice.txt");
+        ArrayList<Task> tasks = storage.load();
+        int taskCount = tasks.size();
+
         Scanner scanner = new Scanner(System.in);
         String input;
 
@@ -25,6 +27,7 @@ public class Alice {
                     taskCount++;
                     tasks.add(new ToDos(description));
                     printAddedMessage(tasks.get(taskCount - 1), taskCount);
+                    storage.save(tasks);
 
                 } else if (input.startsWith("deadline ")) {
                     if (!input.contains(" /by ")) {
@@ -38,6 +41,7 @@ public class Alice {
                     tasks.add(new Deadlines(parts[0].trim(), parts[1].trim()));
                     taskCount++;
                     printAddedMessage(tasks.get(taskCount - 1), taskCount);
+                    storage.save(tasks);
 
                 } else if (input.startsWith("event")) {
                     if (!input.contains(" /from ") || !input.contains(" /to ")) {
@@ -52,6 +56,7 @@ public class Alice {
                     tasks.add(new Events(description, from, to));
                     taskCount++;
                     printAddedMessage(tasks.get(taskCount - 1), taskCount);
+                    storage.save(tasks);
 
                 } else if (input.equals("list")) {
                     System.out.println("Here are the tasks in your list:");
@@ -64,6 +69,7 @@ public class Alice {
                         throw new AliceException("That task number doesn't exist!");
                     }
                     tasks.get(index).markAsDone();
+                    storage.save(tasks);
                     System.out.println("Nice! I've marked this task as done:");
                     System.out.println("  " + tasks.get(index));
 
@@ -73,8 +79,10 @@ public class Alice {
                         throw new AliceException("That task number doesn't exist!");
                     }
                     tasks.get(index).markAsNotDone();
+                    storage.save(tasks);
                     System.out.println("OK, I've marked this task as not done yet:");
                     System.out.println("  " + tasks.get(index));
+
                 } else if (input.startsWith("delete ")) {
                     int index = Integer.parseInt(input.substring(7)) - 1;
                     if (index < 0 || index >= tasks.size()) {
@@ -83,11 +91,14 @@ public class Alice {
                     taskCount--;
                     Task removedTask = tasks.get(index);
                     tasks.remove(index);
+                    storage.save(tasks);
                     System.out.println("Noted. I've removed this task:");
                     System.out.println("  " + removedTask);
                     System.out.println("Now you have " + tasks.size() + " tasks in the list.");
+
                 } else {
                     tasks.add(new Task(input));
+                    storage.save(tasks);
                     taskCount++;
                     System.out.println("added: " + input);
                 }
