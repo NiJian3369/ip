@@ -1,7 +1,13 @@
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 public class Alice {
+    private static final DateTimeFormatter INPUT_FORMAT =
+            DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
+
     public static void main(String[] args) {
         System.out.println("Good day mate! Alice here! What can I do for ya today?");
 
@@ -38,7 +44,13 @@ public class Alice {
                     if (parts.length < 2 || parts[0].trim().isEmpty() || parts[1].trim().isEmpty()) {
                         throw new AliceException("A deadline needs both a description and a /by date.");
                     }
-                    tasks.add(new Deadlines(parts[0].trim(), parts[1].trim()));
+                    LocalDateTime by;
+                    try {
+                        by = LocalDateTime.parse(parts[1].trim(), INPUT_FORMAT);
+                    } catch (DateTimeParseException e) {
+                        throw new AliceException("Please use the date format d/M/yyyy HHmm, e.g. 2/12/2019 1800.");
+                    }
+                    tasks.add(new Deadlines(parts[0].trim(), by));
                     taskCount++;
                     printAddedMessage(tasks.get(taskCount - 1), taskCount);
                     storage.save(tasks);
@@ -49,10 +61,16 @@ public class Alice {
                     }
                     String rest = input.substring(6);
                     String[] fromSplit = rest.split(" /from ");
-                    String description = fromSplit[0];
+                    String description = fromSplit[0].trim();
                     String[] toSplit = fromSplit[1].split(" /to ");
-                    String from = toSplit[0];
-                    String to = toSplit[1];
+                    LocalDateTime from;
+                    LocalDateTime to;
+                    try {
+                        from = LocalDateTime.parse(toSplit[0].trim(), INPUT_FORMAT);
+                        to = LocalDateTime.parse(toSplit[1].trim(), INPUT_FORMAT);
+                    } catch (DateTimeParseException e) {
+                        throw new AliceException("Please use the date format d/M/yyyy HHmm, e.g. 2/12/2019 1800.");
+                    }
                     tasks.add(new Events(description, from, to));
                     taskCount++;
                     printAddedMessage(tasks.get(taskCount - 1), taskCount);
