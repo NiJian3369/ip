@@ -7,13 +7,28 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.time.LocalDateTime;
 
+/**
+ * Handles reading tasks from and writing tasks to the data file on disk,
+ * so that tasks persist between runs of the program.
+ */
 public class Storage {
     private String filePath;
 
+    /**
+     * Constructs a Storage object for the given file path.
+     *
+     * @param filePath relative or absolute path to the data file.
+     */
     public Storage(String filePath) {
         this.filePath = filePath;
     }
 
+    /**
+     * Saves the given list of tasks to the data file, overwriting any
+     * existing content. Creates the parent directory if it does not exist.
+     *
+     * @param tasks the list of tasks to save.
+     */
     public void save(ArrayList<Task> tasks) {
         try {
             File file = new File(filePath);
@@ -32,6 +47,13 @@ public class Storage {
         }
     }
 
+    /**
+     * Loads tasks from the data file. If the file does not exist, returns
+     * an empty list instead of throwing an error.
+     *
+     * @return the list of tasks loaded from the file, or an empty list if
+     *         the file does not exist.
+     */
     public ArrayList<Task> load() {
         ArrayList<Task> tasks = new ArrayList<>();
         File file = new File(filePath);
@@ -57,6 +79,13 @@ public class Storage {
         return tasks;
     }
 
+    /**
+     * Parses a single line from the data file into a Task object, based on
+     * its type marker (T, D, or E).
+     *
+     * @param line a single line of text from the data file.
+     * @return the parsed Task, or null if the type marker is unrecognized.
+     */
     private Task parseLine(String line) {
         String[] parts = line.split(" \\| ");
         String type = parts[0].trim();
