@@ -1,136 +1,82 @@
 import java.util.Scanner;
 import java.util.ArrayList;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 
 public class Alice {
-    private static final DateTimeFormatter INPUT_FORMAT =
-            DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
-
     public static void main(String[] args) {
-        System.out.println("Good day mate! Alice here! What can I do for ya today?");
-
+        Ui ui = new Ui();
         Storage storage = new Storage("./data/alice.txt");
-        ArrayList<Task> tasks = storage.load();
-        int taskCount = tasks.size();
-
+        TaskList tasks = new TaskList(storage.load());
         Scanner scanner = new Scanner(System.in);
         String input;
+
+        ui.showWelcome();
 
         while (true) {
             input = scanner.nextLine();
 
             try {
                 if (input.equals("bye")) {
-                    System.out.println("Good bye mate, I'm off! See ya around!");
+                    ui.showGoodbye();
                     break;
+
                 } else if (input.equals("todo") || input.startsWith("todo ")) {
-                    String description = input.length() > 4 ? input.substring(5).trim() : "";
-                    if (description.isEmpty()) {
-                        throw new AliceException("The description of a todo cannot be empty.");
-                    }
-                    taskCount++;
+                    String description = Parser.parseTodoDescription(input);
                     tasks.add(new ToDos(description));
-                    printAddedMessage(tasks.get(taskCount - 1), taskCount);
-                    storage.save(tasks);
+                    ui.showTaskAdded(tasks.get(tasks.size() - 1), tasks.size());
+                    storage.save(tasks.getAll());
 
                 } else if (input.startsWith("deadline ")) {
-                    if (!input.contains(" /by ")) {
-                        throw new AliceException("A deadline needs a description and a /by date.");
-                    }
-                    String rest = input.substring(9);
-                    String[] parts = rest.split(" /by ");
-                    if (parts.length < 2 || parts[0].trim().isEmpty() || parts[1].trim().isEmpty()) {
-                        throw new AliceException("A deadline needs both a description and a /by date.");
-                    }
-                    LocalDateTime by;
-                    try {
-                        by = LocalDateTime.parse(parts[1].trim(), INPUT_FORMAT);
-                    } catch (DateTimeParseException e) {
-                        throw new AliceException("Please use the date format d/M/yyyy HHmm, e.g. 2/12/2019 1800.");
-                    }
-                    tasks.add(new Deadlines(parts[0].trim(), by));
-                    taskCount++;
-                    printAddedMessage(tasks.get(taskCount - 1), taskCount);
-                    storage.save(tasks);
+                    Deadlines deadline = Parser.parseDeadline(input);
+                    tasks.add(deadline);
+                    ui.showTaskAdded(tasks.get(tasks.size() - 1), tasks.size());
+                    storage.save(tasks.getAll());
 
                 } else if (input.startsWith("event")) {
-                    if (!input.contains(" /from ") || !input.contains(" /to ")) {
-                        throw new AliceException("An event needs a description, /from, and /to.");
-                    }
-                    String rest = input.substring(6);
-                    String[] fromSplit = rest.split(" /from ");
-                    String description = fromSplit[0].trim();
-                    String[] toSplit = fromSplit[1].split(" /to ");
-                    LocalDateTime from;
-                    LocalDateTime to;
-                    try {
-                        from = LocalDateTime.parse(toSplit[0].trim(), INPUT_FORMAT);
-                        to = LocalDateTime.parse(toSplit[1].trim(), INPUT_FORMAT);
-                    } catch (DateTimeParseException e) {
-                        throw new AliceException("Please use the date format d/M/yyyy HHmm, e.g. 2/12/2019 1800.");
-                    }
-                    tasks.add(new Events(description, from, to));
-                    taskCount++;
-                    printAddedMessage(tasks.get(taskCount - 1), taskCount);
-                    storage.save(tasks);
+                    Events event = Parser.parseEvent(input);
+                    tasks.add(event);
+                    ui.showTaskAdded(tasks.get(tasks.size() - 1), tasks.size());
+                    storage.save(tasks.getAll());
 
                 } else if (input.equals("list")) {
-                    System.out.println("Here are the tasks in your list:");
-                    for (int i = 0; i < taskCount; i++) {
-                        System.out.println((i + 1) + "." + tasks.get(i));
-                    }
+                    ui.showTaskList(tasks);
+
                 } else if (input.startsWith("mark ")) {
-                    int index = Integer.parseInt(input.substring(5)) - 1;
-                    if (index < 0 || index >= taskCount) {
+                    int index = Parser.parseIndex(input, 5);
+                    if (!tasks.isValidIndex(index)) {
                         throw new AliceException("That task number doesn't exist!");
                     }
                     tasks.get(index).markAsDone();
-                    storage.save(tasks);
-                    System.out.println("Nice! I've marked this task as done:");
-                    System.out.println("  " + tasks.get(index));
+                    ui.showMarked(tasks.get(index));
+                    storage.save(tasks.getAll());
 
                 } else if (input.startsWith("unmark ")) {
-                    int index = Integer.parseInt(input.substring(7)) - 1;
-                    if (index < 0 || index >= taskCount) {
+                    int index = Parser.parseIndex(input, 7);
+                    if (!tasks.isValidIndex(index)) {
                         throw new AliceException("That task number doesn't exist!");
                     }
                     tasks.get(index).markAsNotDone();
-                    storage.save(tasks);
-                    System.out.println("OK, I've marked this task as not done yet:");
-                    System.out.println("  " + tasks.get(index));
+                    ui.showUnmarked(tasks.get(index));
+                    storage.save(tasks.getAll());
 
                 } else if (input.startsWith("delete ")) {
-                    int index = Integer.parseInt(input.substring(7)) - 1;
-                    if (index < 0 || index >= tasks.size()) {
+                    int index = Parser.parseIndex(input, 7);
+                    if (!tasks.isValidIndex(index)) {
                         throw new AliceException("That task number doesn't exist!");
                     }
-                    taskCount--;
-                    Task removedTask = tasks.get(index);
-                    tasks.remove(index);
-                    storage.save(tasks);
-                    System.out.println("Noted. I've removed this task:");
-                    System.out.println("  " + removedTask);
-                    System.out.println("Now you have " + tasks.size() + " tasks in the list.");
+                    Task removedTask = tasks.remove(index);
+                    ui.showDeleted(removedTask, tasks.size());
+                    storage.save(tasks.getAll());
 
                 } else {
                     tasks.add(new Task(input));
-                    storage.save(tasks);
-                    taskCount++;
-                    System.out.println("added: " + input);
+                    ui.showPlainAdded(input);
+                    storage.save(tasks.getAll());
                 }
             } catch (AliceException e) {
-                System.out.println("OOPS!!! " + e.getMessage());
+                ui.showError(e.getMessage());
             } catch (NumberFormatException e) {
-                System.out.println("OOPS!!! Please enter a valid task number.");
+                ui.showInvalidNumber();
             }
         }
-    }
-
-    private static void printAddedMessage(Task task, int taskCount) {
-        System.out.println("Got it. I've added this task:");
-        System.out.println("  " + task);
-        System.out.println("Now you have " + taskCount + " tasks in the list.");
     }
 }
