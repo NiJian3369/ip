@@ -5,8 +5,10 @@ public class Alice {
     public static void main(String[] args) {
         System.out.println("Good day mate! Alice here! What can I do for ya today?");
 
-        ArrayList<Task> tasks = new ArrayList<>();
-        int taskCount = 0;
+        Storage storage = new Storage("./data/alice.txt");
+        ArrayList<Task> tasks = storage.load();
+        int taskCount = tasks.size();
+
         Scanner scanner = new Scanner(System.in);
         String input;
 
