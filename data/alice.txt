@@ -1,0 +1,4 @@
+E | 0 | Birthday | 2090-09-18T00:00 | 2099-09-18T23:59
+D | 0 | homework | 2000-04-12T10:00
+T | 0 | lsit
+T | 0 | homedaw
