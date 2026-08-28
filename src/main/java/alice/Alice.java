@@ -2,7 +2,19 @@ package alice;
 
 import java.util.Scanner;
 
+/**
+ * Entry point for the Alice chatbot application.
+ * Coordinates the Ui, Storage, TaskList, and Parser components to run
+ * the main command loop that reads user input and executes commands.
+ */
 public class Alice {
+    /**
+     * Runs the Alice chatbot. Loads existing tasks from storage, then
+     * repeatedly reads user input and executes the corresponding command
+     * until the user types "bye".
+     *
+     * @param args command-line arguments (not used).
+     */
     public static void main(String[] args) {
         Ui ui = new Ui();
         Storage storage = new Storage("./data/alice.txt");
