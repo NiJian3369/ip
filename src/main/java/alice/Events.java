@@ -8,8 +8,8 @@ import java.time.format.DateTimeFormatter;
  * a start date/time, and an end date/time.
  */
 public class Events extends Task {
-    protected LocalDateTime from;
-    protected LocalDateTime to;
+    private LocalDateTime from;
+    private LocalDateTime to;
 
     private static final DateTimeFormatter OUTPUT_FORMAT =
             DateTimeFormatter.ofPattern("MMM d yyyy, h:mm a");
