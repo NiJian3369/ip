@@ -3,6 +3,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.time.LocalDateTime;
 
 public class Storage {
     private String filePath;
@@ -64,11 +65,11 @@ public class Storage {
         if (type.equals("T")) {
             task = new ToDos(description);
         } else if (type.equals("D")) {
-            String by = parts[3].trim();
+            LocalDateTime by = LocalDateTime.parse(parts[3].trim());
             task = new Deadlines(description, by);
         } else if (type.equals("E")) {
-            String from = parts[3].trim();
-            String to = parts[4].trim();
+            LocalDateTime from = LocalDateTime.parse(parts[3].trim());
+            LocalDateTime to = LocalDateTime.parse(parts[4].trim());
             task = new Events(description, from, to);
         } else {
             return null;
