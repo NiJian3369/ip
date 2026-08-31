@@ -65,14 +65,6 @@ public class TaskList {
     }
 
     /**
-<<<<<<< HEAD
-     * Checks whether the given index refers to a valid position within
-     * the list.
-     *
-     * @param index the zero-based index to check.
-     * @return true if the index is within bounds, false otherwise.
-     */
-
      * Returns a list of tasks whose description contains the given keyword.
      *
      * @param keyword the keyword to search for.
@@ -88,7 +80,15 @@ public class TaskList {
         return matches;
     }
 
+    /**
+     * Checks whether the given index refers to a valid position within
+     * the list.
+     *
+     * @param index the zero-based index to check.
+     * @return true if the index is within bounds, false otherwise.
+     */
     public boolean isValidIndex(int index) {
+
         return index >= 0 && index < tasks.size();
     }
 
