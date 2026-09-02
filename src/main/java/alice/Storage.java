@@ -67,9 +67,19 @@ public class Storage {
             Scanner fileScanner = new Scanner(file);
             while (fileScanner.hasNextLine()) {
                 String line = fileScanner.nextLine();
-                Task task = parseLine(line);
-                if (task != null) {
-                    tasks.add(task);
+                try {
+                    Task task = parseLine(line);
+                    if (task != null) {
+                        tasks.add(task);
+                    }
+                } catch (RuntimeException e) {
+                    // A single malformed line (e.g. one left over from an
+                    // older version of the file format, or hand-edited by
+                    // accident) should not stop the rest of the file from
+                    // loading, so it is skipped with a warning instead of
+                    // letting the exception propagate and crash startup.
+                    System.out.println("OOPS!!! Skipping a line in the data file that could not be read: "
+                            + line);
                 }
             }
             fileScanner.close();

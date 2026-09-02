@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+
+<!--
+    fx:root (rather than a plain <HBox> tag) is required here because
+    DialogBox.java calls FXMLLoader.setRoot(this) before loading: the
+    loader needs to be told what type the already-constructed root object
+    is, instead of being asked to instantiate a new one.
+-->
+<fx:root type="HBox" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+         alignment="TOP_RIGHT" maxHeight="Infinity" minHeight="-Infinity" spacing="10">
+    <ImageView fx:id="displayPicture" fitHeight="50.0" fitWidth="50.0" preserveRatio="true"/>
+    <Label fx:id="dialog" minHeight="-Infinity" wrapText="true"/>
+</fx:root>
