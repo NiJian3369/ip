@@ -8,10 +8,10 @@ import java.time.format.DateTimeFormatter;
  * it must be completed.
  */
 public class Deadlines extends Task {
-    private LocalDateTime by;
-
     private static final DateTimeFormatter OUTPUT_FORMAT =
             DateTimeFormatter.ofPattern("MMM d yyyy, h:mm a");
+
+    private LocalDateTime by;
 
     /**
      * Constructs a Deadlines task.
