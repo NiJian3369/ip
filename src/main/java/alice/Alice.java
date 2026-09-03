@@ -95,7 +95,7 @@ public class Alice {
                 // description (e.g. from pressing Enter on an empty line),
                 // which previously produced a corrupted line in the data
                 // file that crashed loading on the next run.
-                throw new AliceException("I didn't quite catch that — please type a command.");
+                throw new AliceException("I didn't quite catch that - please type a command.");
 
             } else if (input.equals("bye")) {
                 return ui.showGoodbye();
@@ -125,8 +125,8 @@ public class Alice {
                 return ui.showTaskList(tasks);
 
             } else if (input.equals("find") || input.startsWith("find ")) {
-                String keyword = Parser.parseFindKeyword(input);
-                ArrayList<Task> matches = tasks.find(keyword);
+                String[] keywords = Parser.parseFindKeywords(input);
+                ArrayList<Task> matches = tasks.find(keywords);
                 return ui.showFoundTasks(matches);
 
             } else if (input.startsWith("mark ")) {
