@@ -58,9 +58,9 @@ public class Ui {
      * @return the formatted confirmation message.
      */
     public String showTaskAdded(Task task, int taskCount) {
-        return print("Got it. I've added this task:"
-                + "\n  " + task
-                + "\nNow you have " + taskCount + " tasks in the list.");
+        return print("Got it. I've added this task:",
+                "  " + task,
+                "Now you have " + taskCount + " tasks in the list.");
     }
 
     /**
@@ -70,11 +70,12 @@ public class Ui {
      * @return the formatted task list.
      */
     public String showTaskList(TaskList tasks) {
-        StringBuilder message = new StringBuilder("Here are the tasks in your list:");
+        String[] lines = new String[tasks.size() + 1];
+        lines[0] = "Here are the tasks in your list:";
         for (int i = 0; i < tasks.size(); i++) {
-            message.append("\n").append(i + 1).append(".").append(tasks.get(i));
+            lines[i + 1] = (i + 1) + "." + tasks.get(i);
         }
-        return print(message.toString());
+        return print(lines);
     }
 
     /**
@@ -84,8 +85,7 @@ public class Ui {
      * @return the formatted confirmation message.
      */
     public String showMarked(Task task) {
-        return print("Nice! I've marked this task as done:"
-                + "\n  " + task);
+        return print("Nice! I've marked this task as done:", "  " + task);
     }
 
     /**
@@ -95,8 +95,7 @@ public class Ui {
      * @return the formatted confirmation message.
      */
     public String showUnmarked(Task task) {
-        return print("OK, I've marked this task as not done yet:"
-                + "\n  " + task);
+        return print("OK, I've marked this task as not done yet:", "  " + task);
     }
 
     /**
@@ -107,9 +106,9 @@ public class Ui {
      * @return the formatted confirmation message.
      */
     public String showDeleted(Task task, int remainingCount) {
-        return print("Noted. I've removed this task:"
-                + "\n  " + task
-                + "\nNow you have " + remainingCount + " tasks in the list.");
+        return print("Noted. I've removed this task:",
+                "  " + task,
+                "Now you have " + remainingCount + " tasks in the list.");
     }
 
     /**
@@ -124,27 +123,32 @@ public class Ui {
     }
 
     /**
-     * Displays the list of tasks matching a search keyword.
+     * Displays the list of tasks matching a search.
      *
      * @param matches the list of matching tasks to display.
      * @return the formatted list of matching tasks.
      */
     public String showFoundTasks(ArrayList<Task> matches) {
-        StringBuilder message = new StringBuilder("Here are the matching tasks in your list:");
+        String[] lines = new String[matches.size() + 1];
+        lines[0] = "Here are the matching tasks in your list:";
         for (int i = 0; i < matches.size(); i++) {
-            message.append("\n").append(i + 1).append(".").append(matches.get(i));
+            lines[i + 1] = (i + 1) + "." + matches.get(i);
         }
-        return print(message.toString());
+        return print(lines);
     }
 
     /**
-     * Prints a message to the console and returns it unchanged, so that
-     * callers can send the same text to both the console and the GUI.
+     * Prints one or more lines to the console, joined with newlines, and
+     * returns the joined text so callers can send the exact same content to
+     * the GUI. Passing a single line behaves exactly as it did before this
+     * method took varargs, since Java wraps a lone argument into a
+     * one-element array automatically.
      *
-     * @param message the message to print.
-     * @return the same message, for reuse by the caller.
+     * @param lines the line(s) making up the message.
+     * @return the lines joined into a single message.
      */
-    private String print(String message) {
+    private String print(String... lines) {
+        String message = String.join("\n", lines);
         System.out.println(message);
         return message;
     }

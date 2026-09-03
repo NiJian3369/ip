@@ -65,16 +65,24 @@ public class TaskList {
     }
 
     /**
-     * Returns a list of tasks whose description contains the given keyword.
+     * Returns the tasks whose description contains at least one of the
+     * given keywords (a case-sensitive substring match). Passing a single
+     * keyword behaves exactly as a single-keyword search always did;
+     * passing several returns their union (any task matching at least one
+     * keyword), with each matching task included only once even if it
+     * matches more than one keyword, and in their original list order.
      *
-     * @param keyword the keyword to search for.
+     * @param keywords one or more keywords to search for.
      * @return a list of matching tasks.
      */
-    public ArrayList<Task> find(String keyword) {
+    public ArrayList<Task> find(String... keywords) {
         ArrayList<Task> matches = new ArrayList<>();
         for (Task task : tasks) {
-            if (task.getDescription().contains(keyword)) {
-                matches.add(task);
+            for (String keyword : keywords) {
+                if (task.getDescription().contains(keyword)) {
+                    matches.add(task);
+                    break;
+                }
             }
         }
         return matches;

@@ -97,17 +97,21 @@ public class Parser {
     }
 
     /**
-     * Extracts and validates the keyword from a "find" command.
+     * Extracts and validates one or more keywords from a "find" command.
+     * Multiple keywords are separated by whitespace, e.g.
+     * "find book magazine" searches for tasks matching "book" or
+     * "magazine".
      *
-     * @param input the full raw user input, e.g. "find book".
-     * @return the extracted, trimmed keyword.
-     * @throws AliceException if the keyword is empty.
+     * @param input the full raw user input, e.g. "find book" or
+     *        "find book magazine".
+     * @return the extracted keywords.
+     * @throws AliceException if no keyword is given.
      */
-    public static String parseFindKeyword(String input) throws AliceException {
-        String keyword = input.length() > 4 ? input.substring(5).trim() : "";
-        if (keyword.isEmpty()) {
+    public static String[] parseFindKeywords(String input) throws AliceException {
+        String keywordText = input.length() > 4 ? input.substring(5).trim() : "";
+        if (keywordText.isEmpty()) {
             throw new AliceException("The keyword to find cannot be empty.");
         }
-        return keyword;
+        return keywordText.split("\\s+");
     }
 }
