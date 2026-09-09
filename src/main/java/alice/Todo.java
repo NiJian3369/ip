@@ -4,13 +4,13 @@ package alice;
  * Represents a simple task with only a description and no associated
  * date or time.
  */
-public class ToDos extends Task {
+public class Todo extends Task {
     /**
-     * Constructs a ToDos task.
+     * Constructs a Todo task.
      *
      * @param description description of the task.
      */
-    public ToDos(String description) {
+    public Todo(String description) {
         super(description);
     }
 

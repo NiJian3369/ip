@@ -27,7 +27,7 @@ public class ParserTest {
 
     @Test
     public void parseDeadline_validInput_returnsCorrectDeadline() throws AliceException {
-        Deadlines deadline = Parser.parseDeadline("deadline return book /by 2/12/2019 1800");
+        Deadline deadline = Parser.parseDeadline("deadline return book /by 2/12/2019 1800");
         assertEquals("return book", deadline.getDescription());
         assertEquals(LocalDateTime.of(2019, 12, 2, 18, 0), deadline.getBy());
     }
@@ -49,7 +49,7 @@ public class ParserTest {
 
     @Test
     public void parseEvent_validInput_returnsCorrectEvent() throws AliceException {
-        Events event = Parser.parseEvent("event project meeting /from 2/12/2019 1400 /to 2/12/2019 1600");
+        Event event = Parser.parseEvent("event project meeting /from 2/12/2019 1400 /to 2/12/2019 1600");
         assertEquals("project meeting", event.getDescription());
         assertEquals(LocalDateTime.of(2019, 12, 2, 14, 0), event.getFrom());
         assertEquals(LocalDateTime.of(2019, 12, 2, 16, 0), event.getTo());
@@ -69,8 +69,8 @@ public class ParserTest {
 
     @Test
     public void parseIndex_validInput_returnsZeroBasedIndex() {
-        int index = Parser.parseIndex("mark 3", 5);
-        assertEquals(2, index);
+        int zeroBasedIndex = Parser.parseIndex("mark 3", 5);
+        assertEquals(2, zeroBasedIndex);
     }
 
     @Test

@@ -10,15 +10,15 @@ public class TaskListTest {
     @Test
     public void add_singleTask_sizeIncreases() {
         TaskList tasks = new TaskList();
-        tasks.add(new ToDos("read book"));
+        tasks.add(new Todo("read book"));
         assertEquals(1, tasks.size());
     }
 
     @Test
     public void add_multipleTasks_correctOrderMaintained() {
         TaskList tasks = new TaskList();
-        tasks.add(new ToDos("read book"));
-        tasks.add(new ToDos("return book"));
+        tasks.add(new Todo("read book"));
+        tasks.add(new Todo("return book"));
         assertEquals("read book", tasks.get(0).getDescription());
         assertEquals("return book", tasks.get(1).getDescription());
     }
@@ -26,8 +26,8 @@ public class TaskListTest {
     @Test
     public void remove_validIndex_taskRemovedAndReturned() {
         TaskList tasks = new TaskList();
-        tasks.add(new ToDos("read book"));
-        tasks.add(new ToDos("return book"));
+        tasks.add(new Todo("read book"));
+        tasks.add(new Todo("return book"));
 
         Task removed = tasks.remove(0);
 
@@ -39,21 +39,21 @@ public class TaskListTest {
     @Test
     public void isValidIndex_indexWithinBounds_returnsTrue() {
         TaskList tasks = new TaskList();
-        tasks.add(new ToDos("read book"));
+        tasks.add(new Todo("read book"));
         assertTrue(tasks.isValidIndex(0));
     }
 
     @Test
     public void isValidIndex_negativeIndex_returnsFalse() {
         TaskList tasks = new TaskList();
-        tasks.add(new ToDos("read book"));
+        tasks.add(new Todo("read book"));
         assertFalse(tasks.isValidIndex(-1));
     }
 
     @Test
     public void isValidIndex_indexEqualToSize_returnsFalse() {
         TaskList tasks = new TaskList();
-        tasks.add(new ToDos("read book"));
+        tasks.add(new Todo("read book"));
         assertFalse(tasks.isValidIndex(1));
     }
 

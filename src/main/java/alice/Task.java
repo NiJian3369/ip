@@ -2,8 +2,8 @@ package alice;
 
 /**
  * Represents a basic task with a description and a completion status.
- * Serves as the base class for more specific task types such as ToDos,
- * Deadlines, and Events.
+ * Serves as the base class for more specific task types such as Todo,
+ * Deadline, and Event.
  */
 public class Task {
     private String description;

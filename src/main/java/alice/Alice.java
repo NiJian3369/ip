@@ -102,23 +102,23 @@ public class Alice {
 
             } else if (input.equals("todo") || input.startsWith("todo ")) {
                 String description = Parser.parseTodoDescription(input);
-                tasks.add(new ToDos(description));
+                tasks.add(new Todo(description));
                 String reply = ui.showTaskAdded(tasks.get(tasks.size() - 1), tasks.size());
-                storage.save(tasks.getAll());
+                storage.save(tasks.getAllTasks());
                 return reply;
 
             } else if (input.startsWith("deadline ")) {
-                Deadlines deadline = Parser.parseDeadline(input);
+                Deadline deadline = Parser.parseDeadline(input);
                 tasks.add(deadline);
                 String reply = ui.showTaskAdded(tasks.get(tasks.size() - 1), tasks.size());
-                storage.save(tasks.getAll());
+                storage.save(tasks.getAllTasks());
                 return reply;
 
             } else if (input.startsWith("event")) {
-                Events event = Parser.parseEvent(input);
+                Event event = Parser.parseEvent(input);
                 tasks.add(event);
                 String reply = ui.showTaskAdded(tasks.get(tasks.size() - 1), tasks.size());
-                storage.save(tasks.getAll());
+                storage.save(tasks.getAllTasks());
                 return reply;
 
             } else if (input.equals("list")) {
@@ -130,39 +130,39 @@ public class Alice {
                 return ui.showFoundTasks(matches);
 
             } else if (input.startsWith("mark ")) {
-                int index = Parser.parseIndex(input, 5);
-                if (!tasks.isValidIndex(index)) {
+                int zeroBasedIndex = Parser.parseIndex(input, 5);
+                if (!tasks.isValidIndex(zeroBasedIndex)) {
                     throw new AliceException("That task number doesn't exist!");
                 }
-                tasks.get(index).markAsDone();
-                String reply = ui.showMarked(tasks.get(index));
-                storage.save(tasks.getAll());
+                tasks.get(zeroBasedIndex).markAsDone();
+                String reply = ui.showMarked(tasks.get(zeroBasedIndex));
+                storage.save(tasks.getAllTasks());
                 return reply;
 
             } else if (input.startsWith("unmark ")) {
-                int index = Parser.parseIndex(input, 7);
-                if (!tasks.isValidIndex(index)) {
+                int zeroBasedIndex = Parser.parseIndex(input, 7);
+                if (!tasks.isValidIndex(zeroBasedIndex)) {
                     throw new AliceException("That task number doesn't exist!");
                 }
-                tasks.get(index).markAsNotDone();
-                String reply = ui.showUnmarked(tasks.get(index));
-                storage.save(tasks.getAll());
+                tasks.get(zeroBasedIndex).markAsNotDone();
+                String reply = ui.showUnmarked(tasks.get(zeroBasedIndex));
+                storage.save(tasks.getAllTasks());
                 return reply;
 
             } else if (input.startsWith("delete ")) {
-                int index = Parser.parseIndex(input, 7);
-                if (!tasks.isValidIndex(index)) {
+                int zeroBasedIndex = Parser.parseIndex(input, 7);
+                if (!tasks.isValidIndex(zeroBasedIndex)) {
                     throw new AliceException("That task number doesn't exist!");
                 }
-                Task removedTask = tasks.remove(index);
+                Task removedTask = tasks.remove(zeroBasedIndex);
                 String reply = ui.showDeleted(removedTask, tasks.size());
-                storage.save(tasks.getAll());
+                storage.save(tasks.getAllTasks());
                 return reply;
 
             } else {
                 tasks.add(new Task(input));
                 String reply = ui.showPlainAdded(input);
-                storage.save(tasks.getAll());
+                storage.save(tasks.getAllTasks());
                 return reply;
             }
         } catch (AliceException e) {

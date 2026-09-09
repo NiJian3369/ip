@@ -7,19 +7,19 @@ import java.time.format.DateTimeFormatter;
  * Represents a task with a description and a deadline date/time by which
  * it must be completed.
  */
-public class Deadlines extends Task {
+public class Deadline extends Task {
     private static final DateTimeFormatter OUTPUT_FORMAT =
             DateTimeFormatter.ofPattern("MMM d yyyy, h:mm a");
 
     private LocalDateTime by;
 
     /**
-     * Constructs a Deadlines task.
+     * Constructs a Deadline task.
      *
      * @param description description of the task.
      * @param by the date and time by which the task must be completed.
      */
-    public Deadlines(String description, LocalDateTime by) {
+    public Deadline(String description, LocalDateTime by) {
         super(description);
         this.by = by;
     }

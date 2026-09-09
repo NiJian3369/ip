@@ -105,7 +105,7 @@ public class TaskList {
      *
      * @return the full list of tasks.
      */
-    public ArrayList<Task> getAll() {
+    public ArrayList<Task> getAllTasks() {
         return tasks;
     }
 }

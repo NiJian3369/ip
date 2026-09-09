@@ -105,14 +105,14 @@ public class Storage {
 
         Task task;
         if (type.equals("T")) {
-            task = new ToDos(description);
+            task = new Todo(description);
         } else if (type.equals("D")) {
             LocalDateTime by = LocalDateTime.parse(parts[3].trim());
-            task = new Deadlines(description, by);
+            task = new Deadline(description, by);
         } else if (type.equals("E")) {
             LocalDateTime from = LocalDateTime.parse(parts[3].trim());
             LocalDateTime to = LocalDateTime.parse(parts[4].trim());
-            task = new Events(description, from, to);
+            task = new Event(description, from, to);
         } else {
             return null;
         }

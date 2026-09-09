@@ -28,15 +28,15 @@ public class Parser {
     }
 
     /**
-     * Parses a "deadline" command into a Deadlines task, extracting the
+     * Parses a "deadline" command into a Deadline task, extracting the
      * description and the /by date/time.
      *
      * @param input the full raw user input, e.g. "deadline return book /by 2/12/2019 1800".
-     * @return a new Deadlines task built from the parsed input.
+     * @return a new Deadline task built from the parsed input.
      * @throws AliceException if the input is missing required parts or the
      *         date/time cannot be parsed.
      */
-    public static Deadlines parseDeadline(String input) throws AliceException {
+    public static Deadline parseDeadline(String input) throws AliceException {
         if (!input.contains(" /by ")) {
             throw new AliceException("A deadline needs a description and a /by date.");
         }
@@ -51,20 +51,20 @@ public class Parser {
         } catch (DateTimeParseException e) {
             throw new AliceException("Please use the date format d/M/yyyy HHmm, e.g. 2/12/2019 1800.");
         }
-        return new Deadlines(parts[0].trim(), by);
+        return new Deadline(parts[0].trim(), by);
     }
 
     /**
-     * Parses an "event" command into an Events task, extracting the
+     * Parses an "event" command into an Event task, extracting the
      * description and the /from and /to date/times.
      *
      * @param input the full raw user input, e.g.
      *        "event project meeting /from 2/12/2019 1400 /to 2/12/2019 1600".
-     * @return a new Events task built from the parsed input.
+     * @return a new Event task built from the parsed input.
      * @throws AliceException if the input is missing required parts or the
      *         date/times cannot be parsed.
      */
-    public static Events parseEvent(String input) throws AliceException {
+    public static Event parseEvent(String input) throws AliceException {
         if (!input.contains(" /from ") || !input.contains(" /to ")) {
             throw new AliceException("An event needs a description, /from, and /to.");
         }
@@ -80,7 +80,7 @@ public class Parser {
         } catch (DateTimeParseException e) {
             throw new AliceException("Please use the date format d/M/yyyy HHmm, e.g. 2/12/2019 1800.");
         }
-        return new Events(description, from, to);
+        return new Event(description, from, to);
     }
 
     /**
