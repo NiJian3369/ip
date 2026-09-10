@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.time.LocalDateTime; 
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 
 /**
@@ -38,10 +39,11 @@ public class Storage {
                 parentDir.mkdirs();
             }
 
+            String content = tasks.stream()
+                    .map(task -> task.toFileFormat() + System.lineSeparator())
+                    .collect(Collectors.joining());
             FileWriter writer = new FileWriter(file);
-            for (Task task : tasks) {
-                writer.write(task.toFileFormat() + System.lineSeparator());
-            }
+            writer.write(content);
             writer.close();
         } catch (IOException e) {
             System.out.println("OOPS!!! Something went wrong saving your tasks.");
