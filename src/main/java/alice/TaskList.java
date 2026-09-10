@@ -1,6 +1,8 @@
 package alice;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 /**
  * Represents a list of tasks and provides operations to add, remove,
@@ -76,16 +78,9 @@ public class TaskList {
      * @return a list of matching tasks.
      */
     public ArrayList<Task> find(String... keywords) {
-        ArrayList<Task> matches = new ArrayList<>();
-        for (Task task : tasks) {
-            for (String keyword : keywords) {
-                if (task.getDescription().contains(keyword)) {
-                    matches.add(task);
-                    break;
-                }
-            }
-        }
-        return matches;
+        return tasks.stream()
+                .filter(task -> Arrays.stream(keywords).anyMatch(keyword -> task.getDescription().contains(keyword)))
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     /**
@@ -108,4 +103,4 @@ public class TaskList {
     public ArrayList<Task> getAllTasks() {
         return tasks;
     }
-}
+}
