@@ -148,6 +148,7 @@ public class Ui {
      * @return the lines joined into a single message.
      */
     private String print(String... lines) {
+        assert lines != null && lines.length > 0 : "at least one line must be given to print";
         String message = String.join("\n", lines);
         System.out.println(message);
         return message;
