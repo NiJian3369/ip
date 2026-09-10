@@ -77,4 +77,36 @@ public class ParserTest {
     public void parseIndex_nonNumericInput_exceptionThrown() {
         assertThrows(NumberFormatException.class, () -> Parser.parseIndex("mark abc", 5));
     }
+
+    @Test
+    public void parseSnooze_validInput_returnsIndexAndDays() throws AliceException {
+        int[] snoozeArgs = Parser.parseSnooze("snooze 2 3");
+        assertEquals(1, snoozeArgs[0]);
+        assertEquals(3, snoozeArgs[1]);
+    }
+
+    @Test
+    public void parseSnooze_missingDays_exceptionThrown() {
+        assertThrows(AliceException.class, () -> Parser.parseSnooze("snooze 2"));
+    }
+
+    @Test
+    public void parseSnooze_extraArgument_exceptionThrown() {
+        assertThrows(AliceException.class, () -> Parser.parseSnooze("snooze 2 3 4"));
+    }
+
+    @Test
+    public void parseSnooze_noArguments_exceptionThrown() {
+        assertThrows(AliceException.class, () -> Parser.parseSnooze("snooze"));
+    }
+
+    @Test
+    public void parseSnooze_nonPositiveDays_exceptionThrown() {
+        assertThrows(AliceException.class, () -> Parser.parseSnooze("snooze 2 0"));
+    }
+
+    @Test
+    public void parseSnooze_nonNumericDays_exceptionThrown() {
+        assertThrows(NumberFormatException.class, () -> Parser.parseSnooze("snooze 2 abc"));
+    }
 }

@@ -35,6 +35,16 @@ public class Deadline extends Task {
     }
 
     /**
+     * Pushes this deadline's date/time back by the given number of days.
+     *
+     * @param days the number of days to push the deadline back by; must be positive.
+     */
+    public void snooze(int days) {
+        assert days > 0 : "days to snooze by must be positive";
+        this.by = this.by.plusDays(days);
+    }
+
+    /**
      * Returns a string representation of this deadline task, including its
      * type marker, completion status, description, and formatted deadline.
      *

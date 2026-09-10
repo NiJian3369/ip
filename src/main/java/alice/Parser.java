@@ -106,6 +106,30 @@ public class Parser {
     }
 
     /**
+     * Parses a "snooze" command into the task index and number of days to
+     * push its deadline back by.
+     *
+     * @param input the full raw user input, e.g. "snooze 2 3".
+     * @return a two-element array: {zero-based task index, number of days}.
+     * @throws AliceException if the input doesn't have exactly a task number
+     *         and a day count, or the day count isn't positive.
+     * @throws NumberFormatException if either part is not a valid integer.
+     */
+    public static int[] parseSnooze(String input) throws AliceException {
+        String rest = input.length() > 6 ? input.substring(7).trim() : "";
+        String[] parts = rest.split("\\s+");
+        if (parts.length != 2 || parts[0].isEmpty() || parts[1].isEmpty()) {
+            throw new AliceException("A snooze needs a task number and number of days, e.g. snooze 2 3.");
+        }
+        int zeroBasedIndex = Integer.parseInt(parts[0]) - 1;
+        int days = Integer.parseInt(parts[1]);
+        if (days <= 0) {
+            throw new AliceException("The number of days to snooze must be positive.");
+        }
+        return new int[]{zeroBasedIndex, days};
+    }
+
+    /**
      * Extracts and validates one or more keywords from a "find" command.
      * Multiple keywords are separated by whitespace, e.g.
      * "find book magazine" searches for tasks matching "book" or

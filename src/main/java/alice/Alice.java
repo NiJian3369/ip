@@ -140,6 +140,24 @@ public class Alice {
                 Task removedTask = tasks.remove(zeroBasedIndex);
                 return saveAndRespond(ui.showDeleted(removedTask, tasks.size()));
 
+            } else if (input.equals("snooze") || input.startsWith("snooze ")) {
+                int[] snoozeArgs = Parser.parseSnooze(input);
+                int zeroBasedIndex = snoozeArgs[0];
+                int days = snoozeArgs[1];
+                if (!tasks.isValidIndex(zeroBasedIndex)) {
+                    throw new AliceException("That task number doesn't exist!");
+                }
+                Task task = tasks.get(zeroBasedIndex);
+                if (!(task instanceof Deadline)) {
+                    throw new AliceException("Only deadlines can be snoozed.");
+                }
+                Deadline deadline = (Deadline) task;
+                if (deadline.isDone()) {
+                    throw new AliceException("That task is already marked as done.");
+                }
+                deadline.snooze(days);
+                return saveAndRespond(ui.showSnoozed(deadline));
+
             } else {
                 tasks.add(new Task(input));
                 return saveAndRespond(ui.showPlainAdded(input));
