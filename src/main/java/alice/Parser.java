@@ -100,6 +100,8 @@ public class Parser {
      * @throws NumberFormatException if the remaining text is not a valid number.
      */
     public static int parseIndex(String input, int prefixLength) throws NumberFormatException {
+        assert prefixLength >= 0 && prefixLength <= input.length()
+                : "prefixLength must fall within the input string";
         return Integer.parseInt(input.substring(prefixLength)) - 1;
     }
 
@@ -121,4 +123,4 @@ public class Parser {
         }
         return keywordText.split("\\s+");
     }
-}
+}

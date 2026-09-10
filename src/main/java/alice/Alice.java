@@ -34,6 +34,8 @@ public class Alice {
      * @param storageFilePath path to the file used to persist tasks.
      */
     public Alice(String storageFilePath) {
+        assert storageFilePath != null && !storageFilePath.isBlank()
+                : "storageFilePath must be a non-blank path";
         this.ui = new Ui();
         this.storage = new Storage(storageFilePath);
         this.tasks = new TaskList(storage.load());
