@@ -23,6 +23,7 @@ public class TaskList {
      * @param tasks the initial list of tasks.
      */
     public TaskList(ArrayList<Task> tasks) {
+        assert tasks != null : "the list loaded from storage must not be null";
         this.tasks = tasks;
     }
 
@@ -42,6 +43,7 @@ public class TaskList {
      * @return the removed task.
      */
     public Task remove(int index) {
+        assert isValidIndex(index) : "index must be within bounds before removal";
         return tasks.remove(index);
     }
 
@@ -52,6 +54,7 @@ public class TaskList {
      * @return the task at that index.
      */
     public Task get(int index) {
+        assert isValidIndex(index) : "index must be within bounds before retrieval";
         return tasks.get(index);
     }
 
@@ -76,6 +79,7 @@ public class TaskList {
      * @return a list of matching tasks.
      */
     public ArrayList<Task> find(String... keywords) {
+        assert keywords != null && keywords.length > 0 : "at least one keyword must be given";
         ArrayList<Task> matches = new ArrayList<>();
         for (Task task : tasks) {
             for (String keyword : keywords) {
