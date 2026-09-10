@@ -45,12 +45,7 @@ public class Parser {
         if (parts.length < 2 || parts[0].trim().isEmpty() || parts[1].trim().isEmpty()) {
             throw new AliceException("A deadline needs both a description and a /by date.");
         }
-        LocalDateTime by;
-        try {
-            by = LocalDateTime.parse(parts[1].trim(), INPUT_FORMAT);
-        } catch (DateTimeParseException e) {
-            throw new AliceException("Please use the date format d/M/yyyy HHmm, e.g. 2/12/2019 1800.");
-        }
+        LocalDateTime by = parseDateTime(parts[1]);
         return new Deadline(parts[0].trim(), by);
     }
 
@@ -72,15 +67,27 @@ public class Parser {
         String[] fromSplit = rest.split(" /from ");
         String description = fromSplit[0].trim();
         String[] toSplit = fromSplit[1].split(" /to ");
-        LocalDateTime from;
-        LocalDateTime to;
+        LocalDateTime from = parseDateTime(toSplit[0]);
+        LocalDateTime to = parseDateTime(toSplit[1]);
+        return new Event(description, from, to);
+    }
+
+    /**
+     * Parses a single date/time string in the expected input format
+     * (d/M/yyyy HHmm), shared by both {@link #parseDeadline} and
+     * {@link #parseEvent} so the format and its error message are defined
+     * in exactly one place.
+     *
+     * @param text the raw date/time text, e.g. "2/12/2019 1800".
+     * @return the parsed date/time.
+     * @throws AliceException if the text cannot be parsed in the expected format.
+     */
+    private static LocalDateTime parseDateTime(String text) throws AliceException {
         try {
-            from = LocalDateTime.parse(toSplit[0].trim(), INPUT_FORMAT);
-            to = LocalDateTime.parse(toSplit[1].trim(), INPUT_FORMAT);
+            return LocalDateTime.parse(text.trim(), INPUT_FORMAT);
         } catch (DateTimeParseException e) {
             throw new AliceException("Please use the date format d/M/yyyy HHmm, e.g. 2/12/2019 1800.");
         }
-        return new Event(description, from, to);
     }
 
     /**
@@ -114,4 +121,4 @@ public class Parser {
         }
         return keywordText.split("\\s+");
     }
-}
+}

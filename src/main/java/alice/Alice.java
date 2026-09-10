@@ -103,23 +103,17 @@ public class Alice {
             } else if (input.equals("todo") || input.startsWith("todo ")) {
                 String description = Parser.parseTodoDescription(input);
                 tasks.add(new Todo(description));
-                String reply = ui.showTaskAdded(tasks.get(tasks.size() - 1), tasks.size());
-                storage.save(tasks.getAllTasks());
-                return reply;
+                return saveAndRespond(ui.showTaskAdded(tasks.get(tasks.size() - 1), tasks.size()));
 
             } else if (input.startsWith("deadline ")) {
                 Deadline deadline = Parser.parseDeadline(input);
                 tasks.add(deadline);
-                String reply = ui.showTaskAdded(tasks.get(tasks.size() - 1), tasks.size());
-                storage.save(tasks.getAllTasks());
-                return reply;
+                return saveAndRespond(ui.showTaskAdded(tasks.get(tasks.size() - 1), tasks.size()));
 
             } else if (input.startsWith("event")) {
                 Event event = Parser.parseEvent(input);
                 tasks.add(event);
-                String reply = ui.showTaskAdded(tasks.get(tasks.size() - 1), tasks.size());
-                storage.save(tasks.getAllTasks());
-                return reply;
+                return saveAndRespond(ui.showTaskAdded(tasks.get(tasks.size() - 1), tasks.size()));
 
             } else if (input.equals("list")) {
                 return ui.showTaskList(tasks);
@@ -130,45 +124,60 @@ public class Alice {
                 return ui.showFoundTasks(matches);
 
             } else if (input.startsWith("mark ")) {
-                int zeroBasedIndex = Parser.parseIndex(input, 5);
-                if (!tasks.isValidIndex(zeroBasedIndex)) {
-                    throw new AliceException("That task number doesn't exist!");
-                }
+                int zeroBasedIndex = parseValidIndex(input, 5);
                 tasks.get(zeroBasedIndex).markAsDone();
-                String reply = ui.showMarked(tasks.get(zeroBasedIndex));
-                storage.save(tasks.getAllTasks());
-                return reply;
+                return saveAndRespond(ui.showMarked(tasks.get(zeroBasedIndex)));
 
             } else if (input.startsWith("unmark ")) {
-                int zeroBasedIndex = Parser.parseIndex(input, 7);
-                if (!tasks.isValidIndex(zeroBasedIndex)) {
-                    throw new AliceException("That task number doesn't exist!");
-                }
+                int zeroBasedIndex = parseValidIndex(input, 7);
                 tasks.get(zeroBasedIndex).markAsNotDone();
-                String reply = ui.showUnmarked(tasks.get(zeroBasedIndex));
-                storage.save(tasks.getAllTasks());
-                return reply;
+                return saveAndRespond(ui.showUnmarked(tasks.get(zeroBasedIndex)));
 
             } else if (input.startsWith("delete ")) {
-                int zeroBasedIndex = Parser.parseIndex(input, 7);
-                if (!tasks.isValidIndex(zeroBasedIndex)) {
-                    throw new AliceException("That task number doesn't exist!");
-                }
+                int zeroBasedIndex = parseValidIndex(input, 7);
                 Task removedTask = tasks.remove(zeroBasedIndex);
-                String reply = ui.showDeleted(removedTask, tasks.size());
-                storage.save(tasks.getAllTasks());
-                return reply;
+                return saveAndRespond(ui.showDeleted(removedTask, tasks.size()));
 
             } else {
                 tasks.add(new Task(input));
-                String reply = ui.showPlainAdded(input);
-                storage.save(tasks.getAllTasks());
-                return reply;
+                return saveAndRespond(ui.showPlainAdded(input));
             }
         } catch (AliceException e) {
             return ui.showError(e.getMessage());
         } catch (NumberFormatException e) {
             return ui.showInvalidNumber();
         }
+    }
+
+    /**
+     * Parses a zero-based task index from a command string and checks that
+     * it refers to an existing task, so that every command needing an
+     * index (mark, unmark, delete) validates it the same way.
+     *
+     * @param input the full raw user input, e.g. "mark 3".
+     * @param prefixLength the number of characters before the index number.
+     * @return the validated zero-based index.
+     * @throws AliceException if the index does not refer to an existing task.
+     * @throws NumberFormatException if the remaining text is not a valid number.
+     */
+    private int parseValidIndex(String input, int prefixLength) throws AliceException {
+        int zeroBasedIndex = Parser.parseIndex(input, prefixLength);
+        if (!tasks.isValidIndex(zeroBasedIndex)) {
+            throw new AliceException("That task number doesn't exist!");
+        }
+        return zeroBasedIndex;
+    }
+
+    /**
+     * Persists the current task list to storage and returns the given reply
+     * unchanged, so every command that mutates the task list can save and
+     * respond in one line instead of repeating both steps.
+     *
+     * @param reply the reply to return after saving.
+     * @return the same reply that was passed in.
+     */
+    private String saveAndRespond(String reply) {
+        storage.save(tasks.getAllTasks());
+        return reply;
     }
 }
