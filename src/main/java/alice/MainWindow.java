@@ -50,6 +50,10 @@ public class MainWindow {
     public void setAlice(Alice alice) {
         this.alice = alice;
         dialogContainer.getChildren().add(DialogBox.getAliceDialog(alice.getGreeting(), ALICE_IMAGE));
+        // A data file that failed to load has no console to complain to in
+        // the GUI, so the warning is shown as the next message instead.
+        alice.getStartupWarning().ifPresent(
+                warning -> dialogContainer.getChildren().add(toDialogBox(warning)));
     }
 
     /**
@@ -66,10 +70,10 @@ public class MainWindow {
             return;
         }
 
-        String response = alice.getResponse(input);
+        Response response = alice.getResponse(input);
         dialogContainer.getChildren().addAll(
                 DialogBox.getUserDialog(input, USER_IMAGE),
-                DialogBox.getAliceDialog(response, ALICE_IMAGE)
+                toDialogBox(response)
         );
         userInput.clear();
 
@@ -80,5 +84,18 @@ public class MainWindow {
             closeDelay.setOnFinished(event -> Platform.exit());
             closeDelay.play();
         }
+    }
+
+    /**
+     * Renders a reply as a dialog box, styling failures differently from
+     * ordinary replies.
+     *
+     * @param response the reply to render.
+     * @return the dialog box to add to the conversation.
+     */
+    private static DialogBox toDialogBox(Response response) {
+        return response.isError()
+                ? DialogBox.getErrorDialog(response.getText(), ALICE_IMAGE)
+                : DialogBox.getAliceDialog(response.getText(), ALICE_IMAGE);
     }
 }

@@ -66,14 +66,54 @@ public class ParserTest {
     }
 
     @Test
-    public void parseIndex_validInput_returnsZeroBasedIndex() {
-        int zeroBasedIndex = Parser.parseIndex("mark 3", 5);
+    public void parseIndexArgument_validInput_returnsZeroBasedIndex() throws AliceException {
+        int zeroBasedIndex = Parser.parseIndexArgument("mark 3", "mark");
         assertEquals(2, zeroBasedIndex);
     }
 
     @Test
-    public void parseIndex_nonNumericInput_exceptionThrown() {
-        assertThrows(NumberFormatException.class, () -> Parser.parseIndex("mark abc", 5));
+    public void parseIndexArgument_nonNumericInput_exceptionThrown() {
+        assertThrows(AliceException.class, () -> Parser.parseIndexArgument("mark abc", "mark"));
+    }
+
+    @Test
+    public void parseIndexArgument_missingNumber_exceptionThrown() {
+        assertThrows(AliceException.class, () -> Parser.parseIndexArgument("mark", "mark"));
+    }
+
+    @Test
+    public void parseIndexArgument_onlyWhitespaceAfterCommand_exceptionThrown() {
+        assertThrows(AliceException.class, () -> Parser.parseIndexArgument("delete   ", "delete"));
+    }
+
+    @Test
+    public void parseEvent_toBeforeFrom_exceptionThrown() {
+        assertThrows(AliceException.class,
+                () -> Parser.parseEvent("event meeting /to 2/12/2019 1600 /from 2/12/2019 1400"));
+    }
+
+    @Test
+    public void parseEvent_endsBeforeItStarts_exceptionThrown() {
+        assertThrows(AliceException.class,
+                () -> Parser.parseEvent("event meeting /from 2/12/2019 1600 /to 2/12/2019 1400"));
+    }
+
+    @Test
+    public void parseEvent_emptyDescription_exceptionThrown() {
+        assertThrows(AliceException.class,
+                () -> Parser.parseEvent("event /from 2/12/2019 1400 /to 2/12/2019 1600"));
+    }
+
+    @Test
+    public void parseEvent_blankFromDate_exceptionThrown() {
+        assertThrows(AliceException.class, () -> Parser.parseEvent("event meeting /from  /to 2/12/2019 1600"));
+    }
+
+    @Test
+    public void parseEvent_slashToInsideDescription_parsesCorrectly() throws AliceException {
+        Event event = Parser.parseEvent("event walk /to the shop /from 2/12/2019 1400 /to 2/12/2019 1600");
+        assertEquals("walk /to the shop", event.getDescription());
+        assertEquals(LocalDateTime.of(2019, 12, 2, 14, 0), event.getFrom());
     }
 
     @Test
@@ -105,6 +145,6 @@ public class ParserTest {
 
     @Test
     public void parseSnooze_nonNumericDays_exceptionThrown() {
-        assertThrows(NumberFormatException.class, () -> Parser.parseSnooze("snooze 2 abc"));
+        assertThrows(AliceException.class, () -> Parser.parseSnooze("snooze 2 abc"));
     }
 }
