@@ -3,9 +3,9 @@ package alice;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.jupiter.api.Test;
-
 import java.time.LocalDateTime;
+
+import org.junit.jupiter.api.Test;
 
 public class ParserTest {
 
@@ -57,14 +57,12 @@ public class ParserTest {
 
     @Test
     public void parseEvent_missingFromKeyword_exceptionThrown() {
-        assertThrows(AliceException.class,
-                () -> Parser.parseEvent("event project meeting /to 2/12/2019 1600"));
+        assertThrows(AliceException.class, () -> Parser.parseEvent("event project meeting /to 2/12/2019 1600"));
     }
 
     @Test
     public void parseEvent_missingToKeyword_exceptionThrown() {
-        assertThrows(AliceException.class,
-                () -> Parser.parseEvent("event project meeting /from 2/12/2019 1400"));
+        assertThrows(AliceException.class, () -> Parser.parseEvent("event project meeting /from 2/12/2019 1400"));
     }
 
     @Test
