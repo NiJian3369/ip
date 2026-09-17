@@ -77,6 +77,23 @@ public class DialogBox extends HBox {
     }
 
     /**
+     * Creates a dialog box for a reply that reports a failure, styled so it
+     * stands out from Alice's ordinary replies.
+     *
+     * @param text the error message.
+     * @param img Alice's display picture.
+     * @return a dialog box styled to signal an error.
+     */
+    public static DialogBox getErrorDialog(String text, Image img) {
+        DialogBox dialogBox = new DialogBox(text, img);
+        dialogBox.dialog.setStyle("-fx-background-color: #fdeaea; -fx-text-fill: #8b1a1a;"
+                + " -fx-background-radius: 12; -fx-padding: 8 12 8 12;"
+                + " -fx-border-color: #e57373; -fx-border-radius: 12; -fx-border-width: 1;");
+        dialogBox.flip();
+        return dialogBox;
+    }
+
+    /**
      * Flips this dialog box so the display picture is on the left and the
      * text is on the right, instead of the default (user) layout.
      */

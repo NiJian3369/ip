@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
@@ -14,7 +15,8 @@ import java.util.stream.Collectors;
  * so that tasks persist between runs of the program.
  */
 public class Storage {
-    private String filePath;
+    private final String filePath;
+    private final List<String> loadWarnings = new ArrayList<>();
 
     /**
      * Constructs a Storage object for the given file path.
@@ -30,8 +32,11 @@ public class Storage {
      * existing content. Creates the parent directory if it does not exist.
      *
      * @param tasks the list of tasks to save.
+     * @throws AliceException if the tasks could not be written to disk, so
+     *         that the caller can tell the user their change was not saved
+     *         rather than silently losing it.
      */
-    public void save(ArrayList<Task> tasks) {
+    public void save(ArrayList<Task> tasks) throws AliceException {
         try {
             File file = new File(filePath);
             File parentDir = file.getParentFile();
@@ -46,7 +51,11 @@ public class Storage {
             writer.write(content);
             writer.close();
         } catch (IOException e) {
-            System.out.println("OOPS!!! Something went wrong saving your tasks.");
+            // Previously this was only printed to the console, which the GUI
+            // never shows - so a failed save looked exactly like a successful
+            // one and the user lost work without ever being told.
+            throw new AliceException("I couldn't save your tasks to " + filePath
+                    + ", so this change will be lost when Alice closes.");
         }
     }
 
@@ -78,18 +87,31 @@ public class Storage {
                     // A single malformed line (e.g. one left over from an
                     // older version of the file format, or hand-edited by
                     // accident) should not stop the rest of the file from
-                    // loading, so it is skipped with a warning instead of
+                    // loading, so it is recorded and skipped instead of
                     // letting the exception propagate and crash startup.
-                    System.out.println("OOPS!!! Skipping a line in the data file that could not be read: "
-                            + line);
+                    loadWarnings.add("I skipped a line in your data file that I couldn't read: " + line);
                 }
             }
             fileScanner.close();
         } catch (IOException e) {
-            System.out.println("OOPS!!! Something went wrong loading your tasks.");
+            loadWarnings.add("I couldn't read your saved tasks from " + filePath
+                    + ", so I've started with an empty list.");
         }
 
         return tasks;
+    }
+
+    /**
+     * Returns any problems encountered during the most recent {@link #load()},
+     * such as data-file lines that could not be understood.
+     *
+     * <p>These are collected rather than printed so that a front end with no
+     * console, such as the JavaFX GUI, can still show them to the user.
+     *
+     * @return the warnings from loading, in the order they occurred.
+     */
+    public List<String> getLoadWarnings() {
+        return List.copyOf(loadWarnings);
     }
 
     /**

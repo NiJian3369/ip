@@ -1,6 +1,7 @@
 package alice;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Handles all interactions with the user.
@@ -38,16 +39,6 @@ public class Ui {
      */
     public String showError(String message) {
         return print("OOPS!!! " + message);
-    }
-
-    /**
-     * Displays an error message for when the user enters an invalid
-     * (non-numeric) task number.
-     *
-     * @return the formatted error message.
-     */
-    public String showInvalidNumber() {
-        return print("OOPS!!! Please enter a valid task number.");
     }
 
     /**
@@ -123,14 +114,21 @@ public class Ui {
     }
 
     /**
-     * Displays a message for input that did not match any recognized
-     * command, treated as a plain task addition.
+     * Displays problems encountered while loading the saved task list, so
+     * that a corrupted or unreadable data file is visible to the user
+     * instead of being discovered only when tasks turn out to be missing.
      *
-     * @param input the raw user input that was added as a task.
-     * @return the formatted confirmation message.
+     * @param warnings the problems found while loading; must not be empty.
+     * @return the formatted warning message.
      */
-    public String showPlainAdded(String input) {
-        return print("added: " + input);
+    public String showLoadWarnings(List<String> warnings) {
+        assert warnings != null && !warnings.isEmpty() : "there must be at least one warning to show";
+        String[] lines = new String[warnings.size() + 1];
+        lines[0] = "Heads up - I had trouble reading your saved tasks:";
+        for (int i = 0; i < warnings.size(); i++) {
+            lines[i + 1] = "  " + warnings.get(i);
+        }
+        return print(lines);
     }
 
     /**
