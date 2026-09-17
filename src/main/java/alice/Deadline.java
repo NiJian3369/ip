@@ -50,6 +50,26 @@ public class Deadline extends Task {
      *
      * @return formatted string for display to the user.
      */
+    /**
+     * Returns the display name of this task type.
+     *
+     * @return "Deadline".
+     */
+    @Override
+    public String getTypeName() {
+        return "Deadline";
+    }
+
+    /**
+     * Returns when this task is due, formatted for display.
+     *
+     * @return the due date, prefixed with "by".
+     */
+    @Override
+    public String getScheduleSummary() {
+        return "by " + by.format(OUTPUT_FORMAT);
+    }
+
     @Override
     public String toString() {
         return "[D]" + super.toString() + " (by: " + by.format(OUTPUT_FORMAT) + ")";

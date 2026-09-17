@@ -15,6 +15,16 @@ public class Todo extends Task {
     }
 
     /**
+     * Returns the display name of this task type.
+     *
+     * @return "Todo".
+     */
+    @Override
+    public String getTypeName() {
+        return "Todo";
+    }
+
+    /**
      * Returns a string representation of this task suitable for saving to
      * the data file.
      *

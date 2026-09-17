@@ -13,21 +13,27 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
-import javafx.scene.shape.Circle;
 
 /**
- * A single speech bubble in the conversation: a display picture next to a
- * label of text. User messages are right-aligned with the picture on the
- * right; {@link #flip()} mirrors the layout for Alice's replies so they
- * read as coming from the left.
+ * A single message in the conversation.
+ *
+ * <p>The two sides are deliberately not mirror images of each other: the
+ * user's messages are right-aligned accent-coloured bubbles with no
+ * picture, while Alice's are left-aligned with a small avatar. Because the
+ * conversation only ever has these two participants, the side and colour
+ * are enough to tell them apart, and dropping the user's picture gives the
+ * text noticeably more room in a narrow window.
  */
 public class DialogBox extends HBox {
+    /** Share of the window width a bubble may occupy before it wraps. */
+    private static final double MAX_WIDTH_FRACTION = 0.78;
+
     @FXML
     private Label dialog;
     @FXML
     private ImageView displayPicture;
 
-    private DialogBox(String text, Image img) {
+    private DialogBox(String text) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(DialogBox.class.getResource("/view/DialogBox.fxml"));
             fxmlLoader.setController(this);
@@ -40,24 +46,22 @@ public class DialogBox extends HBox {
         }
 
         dialog.setText(text);
-        displayPicture.setImage(img);
-
-        // Clip the square display picture into a circle, so it reads as an avatar.
-        double radius = displayPicture.getFitWidth() / 2;
-        displayPicture.setClip(new Circle(radius, radius, radius));
+        // Capping the bubble at a fraction of the window keeps long replies
+        // readable instead of letting them stretch the full width, and
+        // because it is a binding it re-wraps as the window is resized.
+        dialog.maxWidthProperty().bind(widthProperty().multiply(MAX_WIDTH_FRACTION));
     }
 
     /**
      * Creates a dialog box for a message the user typed.
      *
      * @param text the user's message.
-     * @param img the user's display picture.
-     * @return a dialog box styled for the user (aligned to the right).
+     * @return a dialog box styled for the user (right-aligned, no picture).
      */
-    public static DialogBox getUserDialog(String text, Image img) {
-        DialogBox dialogBox = new DialogBox(text, img);
-        dialogBox.dialog.setStyle("-fx-background-color: #4a90e2; -fx-text-fill: white;"
-                + " -fx-background-radius: 12; -fx-padding: 8 12 8 12;");
+    public static DialogBox getUserDialog(String text) {
+        DialogBox dialogBox = new DialogBox(text);
+        dialogBox.hideDisplayPicture();
+        dialogBox.dialog.getStyleClass().add("bubble-user");
         return dialogBox;
     }
 
@@ -66,12 +70,12 @@ public class DialogBox extends HBox {
      *
      * @param text Alice's reply.
      * @param img Alice's display picture.
-     * @return a dialog box styled for Alice (aligned to the left).
+     * @return a dialog box styled for Alice (left-aligned, with avatar).
      */
     public static DialogBox getAliceDialog(String text, Image img) {
-        DialogBox dialogBox = new DialogBox(text, img);
-        dialogBox.dialog.setStyle("-fx-background-color: #e6e6e6; -fx-text-fill: black;"
-                + " -fx-background-radius: 12; -fx-padding: 8 12 8 12;");
+        DialogBox dialogBox = new DialogBox(text);
+        dialogBox.displayPicture.setImage(img);
+        dialogBox.dialog.getStyleClass().add("bubble-alice");
         dialogBox.flip();
         return dialogBox;
     }
@@ -85,12 +89,20 @@ public class DialogBox extends HBox {
      * @return a dialog box styled to signal an error.
      */
     public static DialogBox getErrorDialog(String text, Image img) {
-        DialogBox dialogBox = new DialogBox(text, img);
-        dialogBox.dialog.setStyle("-fx-background-color: #fdeaea; -fx-text-fill: #8b1a1a;"
-                + " -fx-background-radius: 12; -fx-padding: 8 12 8 12;"
-                + " -fx-border-color: #e57373; -fx-border-radius: 12; -fx-border-width: 1;");
+        DialogBox dialogBox = new DialogBox(text);
+        dialogBox.displayPicture.setImage(img);
+        dialogBox.dialog.getStyleClass().add("bubble-error");
         dialogBox.flip();
         return dialogBox;
+    }
+
+    /**
+     * Removes the display picture from the layout entirely, so it takes up
+     * no space rather than leaving a 26px gap where a picture would be.
+     */
+    private void hideDisplayPicture() {
+        displayPicture.setVisible(false);
+        displayPicture.setManaged(false);
     }
 
     /**

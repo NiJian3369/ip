@@ -52,6 +52,26 @@ public class Event extends Task {
      *
      * @return formatted string for display to the user.
      */
+    /**
+     * Returns the display name of this task type.
+     *
+     * @return "Event".
+     */
+    @Override
+    public String getTypeName() {
+        return "Event";
+    }
+
+    /**
+     * Returns the span this event runs over, formatted for display.
+     *
+     * @return the start and end date/times, separated by an en dash.
+     */
+    @Override
+    public String getScheduleSummary() {
+        return from.format(OUTPUT_FORMAT) + " \u2013 " + to.format(OUTPUT_FORMAT);
+    }
+
     @Override
     public String toString() {
         return "[E]" + super.toString() + " (from: " + from.format(OUTPUT_FORMAT)

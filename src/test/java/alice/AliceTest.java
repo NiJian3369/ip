@@ -2,6 +2,7 @@ package alice;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Path;
@@ -72,6 +73,30 @@ public class AliceTest {
 
         assertTrue(response.isError());
         assertTrue(response.getText().contains("1 task(s)"));
+    }
+
+    @Test
+    public void getTasks_reflectsCommands_andIsUnmodifiable() {
+        Alice alice = newAlice();
+        alice.getResponse("todo read book");
+
+        assertEquals(1, alice.getTasks().size());
+        assertEquals("read book", alice.getTasks().get(0).getDescription());
+        assertThrows(UnsupportedOperationException.class,
+                () -> alice.getTasks().add(new Todo("sneaky")));
+    }
+
+    @Test
+    public void getTypeName_eachTaskType_isNamedForDisplay() {
+        Alice alice = newAlice();
+        alice.getResponse("todo read book");
+        alice.getResponse("deadline essay /by 2/12/2019 1800");
+        alice.getResponse("event talk /from 2/12/2019 1400 /to 2/12/2019 1600");
+
+        assertEquals("Todo", alice.getTasks().get(0).getTypeName());
+        assertEquals("Deadline", alice.getTasks().get(1).getTypeName());
+        assertEquals("Event", alice.getTasks().get(2).getTypeName());
+        assertEquals("", alice.getTasks().get(0).getScheduleSummary());
     }
 
     @Test
