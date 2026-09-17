@@ -1,6 +1,7 @@
 package alice;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
@@ -90,6 +91,20 @@ public class Alice {
             return Optional.empty();
         }
         return Optional.of(Response.ofError(ui.showLoadWarnings(warnings)));
+    }
+
+    /**
+     * Returns the current task list, for a front end that shows the tasks
+     * alongside the conversation.
+     *
+     * <p>The list is unmodifiable so that a view can never edit the tasks
+     * behind the command handling's back: every change still has to go
+     * through {@link #getResponse}.
+     *
+     * @return the tasks, in list order.
+     */
+    public List<Task> getTasks() {
+        return Collections.unmodifiableList(tasks.getAllTasks());
     }
 
     /**

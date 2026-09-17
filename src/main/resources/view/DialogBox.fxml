@@ -9,9 +9,18 @@
     DialogBox.java calls FXMLLoader.setRoot(this) before loading: the
     loader needs to be told what type the already-constructed root object
     is, instead of being asked to instantiate a new one.
+
+    The display picture is small and shown only for Alice; the user's own
+    messages are identified by being right-aligned and accent-coloured,
+    which keeps the two sides visually distinct without spending 50px of a
+    narrow window on a picture beside every single line.
+
+    The label is declared before the image so that flipping the box for
+    Alice's replies (which reverses the children) leaves her avatar on the
+    left, the side her messages are aligned to.
 -->
-<fx:root type="HBox" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
-         alignment="TOP_RIGHT" maxHeight="Infinity" minHeight="-Infinity" spacing="10">
-    <ImageView fx:id="displayPicture" fitHeight="50.0" fitWidth="50.0" preserveRatio="true"/>
-    <Label fx:id="dialog" minHeight="-Infinity" wrapText="true"/>
+<fx:root alignment="TOP_RIGHT" maxHeight="Infinity" minHeight="-Infinity" spacing="8"
+         type="HBox" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+    <Label fx:id="dialog" minHeight="-Infinity" styleClass="bubble" wrapText="true"/>
+    <ImageView fx:id="displayPicture" fitHeight="26.0" fitWidth="26.0" preserveRatio="true"/>
 </fx:root>

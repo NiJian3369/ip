@@ -16,6 +16,25 @@ public class DeadlineTest {
     }
 
     @Test
+    public void getTypeName_deadline_returnsDeadline() {
+        Deadline deadline = new Deadline("return book", LocalDateTime.of(2019, 12, 2, 18, 0));
+        assertEquals("Deadline", deadline.getTypeName());
+    }
+
+    @Test
+    public void getScheduleSummary_deadline_describesDueDate() {
+        Deadline deadline = new Deadline("return book", LocalDateTime.of(2019, 12, 2, 18, 0));
+        assertEquals("by Dec 2 2019, 6:00 PM", deadline.getScheduleSummary());
+    }
+
+    @Test
+    public void getScheduleSummary_afterSnooze_reflectsNewDate() {
+        Deadline deadline = new Deadline("return book", LocalDateTime.of(2019, 12, 2, 18, 0));
+        deadline.snooze(3);
+        assertEquals("by Dec 5 2019, 6:00 PM", deadline.getScheduleSummary());
+    }
+
+    @Test
     public void snooze_calledTwice_accumulatesOffset() {
         Deadline deadline = new Deadline("return book", LocalDateTime.of(2019, 12, 2, 18, 0));
         deadline.snooze(2);

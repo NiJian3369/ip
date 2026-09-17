@@ -62,6 +62,29 @@ public class Task {
     }
 
     /**
+     * Returns the human-readable name of this kind of task, for display
+     * somewhere the "[T]"-style marker would be too cryptic.
+     *
+     * @return the name of this task type.
+     */
+    public String getTypeName() {
+        return "Task";
+    }
+
+    /**
+     * Returns a short description of when this task is scheduled, or an
+     * empty string for a task that has no date attached.
+     *
+     * <p>Each subclass formats its own dates, so a caller wanting to show
+     * task details never has to test what type it is holding.
+     *
+     * @return the schedule summary, or an empty string if there is none.
+     */
+    public String getScheduleSummary() {
+        return "";
+    }
+
+    /**
      * Returns a string representation of this task suitable for saving to
      * the data file.
      *
