@@ -112,6 +112,17 @@ public class Ui {
     }
 
     /**
+     * Displays a confirmation message after a deadline has been snoozed
+     * (pushed back).
+     *
+     * @param deadline the deadline that was snoozed, with its new date already applied.
+     * @return the formatted confirmation message.
+     */
+    public String showSnoozed(Deadline deadline) {
+        return print("Alright, I've pushed back this deadline:", "  " + deadline);
+    }
+
+    /**
      * Displays a message for input that did not match any recognized
      * command, treated as a plain task addition.
      *
