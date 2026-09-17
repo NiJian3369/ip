@@ -22,5 +22,5 @@
 <fx:root alignment="TOP_RIGHT" maxHeight="Infinity" minHeight="-Infinity" spacing="8"
          type="HBox" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
     <Label fx:id="dialog" minHeight="-Infinity" styleClass="bubble" wrapText="true"/>
-    <ImageView fx:id="displayPicture" fitHeight="26.0" fitWidth="26.0" preserveRatio="true"/>
+    <ImageView fx:id="displayPicture" fitHeight="32.0" fitWidth="32.0" preserveRatio="true"/>
 </fx:root>
