@@ -11,15 +11,44 @@ import java.util.List;
  * the JavaFX GUI (see {@link MainWindow}) display the exact same wording in
  * a dialog box, without duplicating the message-formatting logic in two
  * places.
+ *
+ * <p>Alice is deliberately a reluctant assistant: she grumbles about being
+ * asked, and denies caring how it turns out. That attitude is confined to
+ * the wording around the information and never the information itself -
+ * task numbers, counts, dates and the reason a command failed are all
+ * stated as plainly as they ever were, because a chatbot whose personality
+ * obscures what went wrong is simply a worse chatbot.
  */
 public class Ui {
+    // The faces are written as Unicode escapes so this file stays pure
+    // ASCII. It therefore compiles to the same bytes whatever encoding a
+    // machine or CI runner happens to default to, without the build having
+    // to pin a source encoding. Naming them also keeps the messages below
+    // readable, and lets one face be reused by several of them.
+
+    /** Sceptical side-eye. */
+    private static final String FACE_SIDE_EYE = "(\uFFE2_\uFFE2)";
+    /** Indignant, chin-up huff. */
+    private static final String FACE_HUFFY = "(\uFFE3^\uFFE3)";
+    /** Quietly pleased with herself. */
+    private static final String FACE_SMUG = "(\uFFE3\u03C9\uFFE3)";
+    /** Caught mildly off guard. */
+    private static final String FACE_SURPRISED = "(\u30FB_\u30FB)";
+    /** Flat and unimpressed. */
+    private static final String FACE_FLAT = "(\uFFE3_\uFFE3)";
+    /** Long-suffering sigh. */
+    private static final String FACE_EXASPERATED = "(\uFF1B\u4E00_\u4E00)";
+    /** Thrown by something unexpected. */
+    private static final String FACE_CONFUSED = "(\u30FB_\u30FB;)";
+
     /**
      * Displays the welcome message shown when the program starts.
      *
      * @return the welcome message.
      */
     public String showWelcome() {
-        return print("Good day mate! Alice here! What can I do for ya today?");
+        return print("Oh. It's you. " + FACE_SIDE_EYE,
+                "Well? What do you want me to keep track of?");
     }
 
     /**
@@ -28,17 +57,30 @@ public class Ui {
      * @return the goodbye message.
      */
     public String showGoodbye() {
-        return print("Good bye mate, I'm off! See ya around!");
+        return print("Finally. Go on then. " + FACE_HUFFY,
+                "...Don't miss your deadlines. Not that I'd care.");
     }
 
     /**
      * Displays an error message to the user.
      *
+     * <p>The cause is passed through word for word; only the framing around
+     * it is Alice's, so an error stays exactly as easy to act on as it was
+     * before she had any personality.
+     *
      * @param message the error message to display.
      * @return the formatted error message.
      */
     public String showError(String message) {
-        return print("OOPS!!! " + message);
+        // Some causes run to several lines (the list of valid commands, for
+        // one). The face belongs beside the complaint on the first line,
+        // not stranded at the end of the explanation that follows it.
+        int firstBreak = message.indexOf('\n');
+        if (firstBreak < 0) {
+            return print("Huh? " + message + " " + FACE_CONFUSED);
+        }
+        return print("Huh? " + message.substring(0, firstBreak) + " " + FACE_CONFUSED,
+                message.substring(firstBreak + 1));
     }
 
     /**
@@ -49,9 +91,9 @@ public class Ui {
      * @return the formatted confirmation message.
      */
     public String showTaskAdded(Task task, int taskCount) {
-        return print("Got it. I've added this task:",
+        return print("Fine, I wrote it down. " + FACE_SMUG,
                 "  " + task,
-                "Now you have " + taskCount + " tasks in the list.");
+                "That's " + taskCount + " now. Hope you're planning to actually do them.");
     }
 
     /**
@@ -61,8 +103,11 @@ public class Ui {
      * @return the formatted task list.
      */
     public String showTaskList(TaskList tasks) {
+        if (tasks.size() == 0) {
+            return print("Nothing here. Must be nice, having no responsibilities. " + FACE_SMUG);
+        }
         String[] lines = new String[tasks.size() + 1];
-        lines[0] = "Here are the tasks in your list:";
+        lines[0] = "Here. Don't make me say it twice. " + FACE_HUFFY;
         for (int i = 0; i < tasks.size(); i++) {
             lines[i + 1] = (i + 1) + "." + tasks.get(i);
         }
@@ -76,7 +121,7 @@ public class Ui {
      * @return the formatted confirmation message.
      */
     public String showMarked(Task task) {
-        return print("Nice! I've marked this task as done:", "  " + task);
+        return print("Oh? You actually finished something. " + FACE_SURPRISED, "  " + task);
     }
 
     /**
@@ -86,7 +131,7 @@ public class Ui {
      * @return the formatted confirmation message.
      */
     public String showUnmarked(Task task) {
-        return print("OK, I've marked this task as not done yet:", "  " + task);
+        return print("Changed your mind already? Typical. " + FACE_SIDE_EYE, "  " + task);
     }
 
     /**
@@ -97,9 +142,9 @@ public class Ui {
      * @return the formatted confirmation message.
      */
     public String showDeleted(Task task, int remainingCount) {
-        return print("Noted. I've removed this task:",
+        return print("Gone. Not that it matters to me. " + FACE_FLAT,
                 "  " + task,
-                "Now you have " + remainingCount + " tasks in the list.");
+                remainingCount + " left.");
     }
 
     /**
@@ -110,7 +155,7 @@ public class Ui {
      * @return the formatted confirmation message.
      */
     public String showSnoozed(Deadline deadline) {
-        return print("Alright, I've pushed back this deadline:", "  " + deadline);
+        return print("Putting it off again, are we? ...Fine. " + FACE_EXASPERATED, "  " + deadline);
     }
 
     /**
@@ -124,7 +169,7 @@ public class Ui {
     public String showLoadWarnings(List<String> warnings) {
         assert warnings != null && !warnings.isEmpty() : "there must be at least one warning to show";
         String[] lines = new String[warnings.size() + 1];
-        lines[0] = "Heads up - I had trouble reading your saved tasks:";
+        lines[0] = "Your save file is a mess. I did what I could. " + FACE_EXASPERATED;
         for (int i = 0; i < warnings.size(); i++) {
             lines[i + 1] = "  " + warnings.get(i);
         }
@@ -138,8 +183,11 @@ public class Ui {
      * @return the formatted list of matching tasks.
      */
     public String showFoundTasks(ArrayList<Task> matches) {
+        if (matches.isEmpty()) {
+            return print("Nothing matched. Try remembering what you actually wrote. " + FACE_FLAT);
+        }
         String[] lines = new String[matches.size() + 1];
-        lines[0] = "Here are the matching tasks in your list:";
+        lines[0] = "These matched. You're welcome, by the way. " + FACE_SMUG;
         for (int i = 0; i < matches.size(); i++) {
             lines[i + 1] = (i + 1) + "." + matches.get(i);
         }
