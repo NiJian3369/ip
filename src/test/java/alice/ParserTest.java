@@ -88,20 +88,20 @@ public class ParserTest {
 
     @Test
     public void parseEvent_toBeforeFrom_exceptionThrown() {
-        assertThrows(AliceException.class,
-                () -> Parser.parseEvent("event meeting /to 2/12/2019 1600 /from 2/12/2019 1400"));
+        String input = "event meeting /to 2/12/2019 1600 /from 2/12/2019 1400";
+        assertThrows(AliceException.class, () -> Parser.parseEvent(input));
     }
 
     @Test
     public void parseEvent_endsBeforeItStarts_exceptionThrown() {
-        assertThrows(AliceException.class,
-                () -> Parser.parseEvent("event meeting /from 2/12/2019 1600 /to 2/12/2019 1400"));
+        String input = "event meeting /from 2/12/2019 1600 /to 2/12/2019 1400";
+        assertThrows(AliceException.class, () -> Parser.parseEvent(input));
     }
 
     @Test
     public void parseEvent_emptyDescription_exceptionThrown() {
-        assertThrows(AliceException.class,
-                () -> Parser.parseEvent("event /from 2/12/2019 1400 /to 2/12/2019 1600"));
+        String input = "event /from 2/12/2019 1400 /to 2/12/2019 1600";
+        assertThrows(AliceException.class, () -> Parser.parseEvent(input));
     }
 
     @Test

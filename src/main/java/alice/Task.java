@@ -4,8 +4,14 @@ package alice;
  * Represents a basic task with a description and a completion status.
  * Serves as the base class for more specific task types such as Todo,
  * Deadline, and Event.
+ *
+ * <p>The class is abstract because a task with no type is not something the
+ * program has any use for: every task the user can create is a Todo, a
+ * Deadline or an Event. Enforcing that in the type system also makes it
+ * impossible to reintroduce the bug where unrecognised input was stored as
+ * a bare Task, which then silently came back from the data file as a Todo.
  */
-public class Task {
+public abstract class Task {
     private String description;
     private boolean isDone;
 
@@ -88,11 +94,13 @@ public class Task {
      * Returns a string representation of this task suitable for saving to
      * the data file.
      *
+     * <p>Abstract rather than defaulted, so that adding a new kind of task
+     * without deciding how it is persisted is a compile error, instead of a
+     * task that quietly saves itself under the wrong type marker.
+     *
      * @return formatted string for file storage.
      */
-    public String toFileFormat() {
-        return "T | " + (isDone ? "1" : "0") + " | " + description;
-    }
+    public abstract String toFileFormat();
 
     /**
      * Returns a string representation of this task, including its

@@ -3,6 +3,7 @@ package alice;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Locale;
 
 /**
  * Handles parsing of raw user input strings into structured data or task
@@ -10,7 +11,7 @@ import java.time.format.DateTimeParseException;
  */
 public class Parser {
     private static final DateTimeFormatter INPUT_FORMAT =
-            DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
+            DateTimeFormatter.ofPattern("d/M/yyyy HHmm", Locale.ENGLISH);
     private static final String FROM_MARKER = "/from ";
     private static final String TO_MARKER = "/to ";
     private static final int EVENT_PREFIX_LENGTH = "event".length();

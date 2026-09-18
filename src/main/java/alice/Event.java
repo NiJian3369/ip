@@ -2,14 +2,16 @@ package alice;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 /**
  * Represents a task that occurs over a period of time, with a description,
  * a start date/time, and an end date/time.
  */
 public class Event extends Task {
+    // See Deadline for why the locale is pinned rather than left to default.
     private static final DateTimeFormatter OUTPUT_FORMAT =
-            DateTimeFormatter.ofPattern("MMM d yyyy, h:mm a");
+            DateTimeFormatter.ofPattern("MMM d yyyy, h:mm a", Locale.ENGLISH);
 
     private LocalDateTime from;
     private LocalDateTime to;
@@ -47,12 +49,6 @@ public class Event extends Task {
     }
 
     /**
-     * Returns a string representation of this event, including its type
-     * marker, completion status, description, and formatted start/end times.
-     *
-     * @return formatted string for display to the user.
-     */
-    /**
      * Returns the display name of this task type.
      *
      * @return "Event".
@@ -72,6 +68,12 @@ public class Event extends Task {
         return from.format(OUTPUT_FORMAT) + " \u2013 " + to.format(OUTPUT_FORMAT);
     }
 
+    /**
+     * Returns a string representation of this event, including its type
+     * marker, completion status, description, and formatted start/end times.
+     *
+     * @return formatted string for display to the user.
+     */
     @Override
     public String toString() {
         return "[E]" + super.toString() + " (from: " + from.format(OUTPUT_FORMAT)
