@@ -2,14 +2,20 @@ package alice;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 /**
  * Represents a task with a description and a deadline date/time by which
  * it must be completed.
  */
 public class Deadline extends Task {
+    // The locale is pinned because the day period is rendered differently
+    // depending on it - "6:00 PM" under en, but "6:00 pm" under en-SG - so
+    // without this the same task reads differently on different machines,
+    // and the CI job produces different output on each of its three
+    // platforms.
     private static final DateTimeFormatter OUTPUT_FORMAT =
-            DateTimeFormatter.ofPattern("MMM d yyyy, h:mm a");
+            DateTimeFormatter.ofPattern("MMM d yyyy, h:mm a", Locale.ENGLISH);
 
     private LocalDateTime by;
 
@@ -45,12 +51,6 @@ public class Deadline extends Task {
     }
 
     /**
-     * Returns a string representation of this deadline task, including its
-     * type marker, completion status, description, and formatted deadline.
-     *
-     * @return formatted string for display to the user.
-     */
-    /**
      * Returns the display name of this task type.
      *
      * @return "Deadline".
@@ -70,6 +70,12 @@ public class Deadline extends Task {
         return "by " + by.format(OUTPUT_FORMAT);
     }
 
+    /**
+     * Returns a string representation of this deadline task, including its
+     * type marker, completion status, description, and formatted deadline.
+     *
+     * @return formatted string for display to the user.
+     */
     @Override
     public String toString() {
         return "[D]" + super.toString() + " (by: " + by.format(OUTPUT_FORMAT) + ")";
